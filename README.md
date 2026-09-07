@@ -2,13 +2,15 @@
 
 This repository contains problems/solutions and notes from my SE interview preparation.
 
-* **Data Structures and Algorithms**
-  * [Grind 75](https://www.techinterviewhandbook.org/grind75/?order=all_rounded)
+## Data Structures and Algorithms
 
-## How to run?
+Let's solve the problems from [Grind 75](https://www.techinterviewhandbook.org/grind75/?order=all_rounded).
 
-You can run the doctests in all the Python scripts.
+### How to run?
+
+All the solutions are decorated with doctests.
+You can run them:
 
 ```bash
-python -m doctest -v path/to/script
+python -m doctest -v dsa/grind75
 ```
