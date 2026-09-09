@@ -1,4 +1,51 @@
+from collections import Counter
+
 from datastructures import ListNode
+
+
+# https://leetcode.com/problems/valid-anagram/
+def is_anagram(s: str, t: str) -> bool:
+    """
+    >>> is_anagram("anagram", "nagaram")
+    True
+    >>> is_anagram("rat", "car")
+    False
+    >>> is_anagram("a", "ab")
+    False
+    """
+    sfreq = Counter(s)
+    tfreq = Counter(t)
+    if len(sfreq) != len(tfreq):
+        return False
+    for chr, cnt in sfreq.items():
+        if chr not in tfreq or tfreq[chr] != cnt:
+            return False
+    return True
+
+
+# https://leetcode.com/problems/valid-palindrome/
+def is_palindrome(s: str) -> bool:
+    """
+    >>> is_palindrome("A man, a plan, a canal: Panama")
+    True
+    >>> is_palindrome("race a car")
+    False
+    >>> is_palindrome(" ")
+    True
+    """
+    left, right = 0, len(s) - 1
+    while left < right:
+        while left < right and not s[left].isalnum():
+            left += 1
+        while left < right and not s[right].isalnum():
+            right -= 1
+        if left >= right:
+            return True
+        if s[left].lower() != s[right].lower():
+            return False
+        left += 1
+        right -= 1
+    return True
 
 
 # https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
