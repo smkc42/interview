@@ -1,6 +1,44 @@
 from collections import Counter
 
-from datastructures import ListNode
+from datastructures import ListNode, TreeNode
+
+
+# https://leetcode.com/problems/binary-search/
+def search(nums: list[int], target: int) -> int:
+    """
+    >>> search([-1, 0, 3, 5, 9, 12], 9)
+    4
+    >>> search([-1, 0, 3, 5, 9, 12], 2)
+    -1
+    >>> search([5], 5)
+    0
+    """
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] > target:
+            right = mid - 1
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            return mid
+    return -1
+
+
+# https://leetcode.com/problems/invert-binary-tree/
+def invert_tree(root: TreeNode | None) -> TreeNode | None:
+    """
+    >>> TreeNode.to_list(invert_tree(TreeNode.from_list([4, 2, 7, 1, 3, 6, 9])))
+    [4, 7, 2, 9, 6, 3, 1]
+    >>> TreeNode.to_list(invert_tree(TreeNode.from_list([2, 1, 3])))
+    [2, 3, 1]
+    >>> TreeNode.to_list(invert_tree(TreeNode.from_list([])))
+    []
+    """
+    if root is None:
+        return None
+    root.left, root.right = invert_tree(root.right), invert_tree(root.left)
+    return root
 
 
 # https://leetcode.com/problems/valid-anagram/
