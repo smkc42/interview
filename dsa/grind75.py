@@ -1,6 +1,47 @@
-from collections import Counter
+from collections import Counter, deque
 
 from datastructures import ListNode, TreeNode
+
+
+# https://leetcode.com/problems/maximum-subarray/
+def max_subarray(nums: list[int]) -> int:
+    """
+    >>> max_subarray([-2, 1, -3, 4, -1, 2, 1, -5, 4])
+    6
+    >>> max_subarray([1])
+    1
+    >>> max_subarray([5, 4, -1, 7, 8])
+    23
+    """
+    max_so_far = max_ending_here = nums[0]
+    for n in nums[1:]:
+        max_ending_here = max(max_ending_here + n, n)
+        max_so_far = max(max_so_far, max_ending_here)
+    return max_so_far
+
+
+# https://leetcode.com/problems/flood-fill/
+def flood_fill(image: list[list[int]], sr: int, sc: int, color: int) -> list[list[int]]:
+    """
+    >>> flood_fill([[1, 1, 1], [1, 1, 0], [1, 0, 1]], 1, 1, 2)
+    [[2, 2, 2], [2, 2, 0], [2, 0, 1]]
+    >>> flood_fill([[0, 0, 0], [0, 0, 0]], 0, 0, 0)
+    [[0, 0, 0], [0, 0, 0]]
+    """
+    rows, cols = len(image), len(image[0])
+    orig = image[sr][sc]
+    if orig == color:
+        return image
+    image[sr][sc] = color
+    q = deque([(sr, sc)])
+    while len(q) > 0:
+        r, c = q.popleft()
+        for dr, dc in [(-1, 0), (1, 0), (0, 1), (0, -1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and image[nr][nc] == orig:
+                image[nr][nc] = color
+                q.append((nr, nc))
+    return image
 
 
 # https://leetcode.com/problems/binary-search/
