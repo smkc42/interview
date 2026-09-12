@@ -3,6 +3,70 @@ from collections import Counter, deque
 from datastructures import ListNode, TreeNode
 
 
+# https://leetcode.com/problems/insert-interval/
+def insert(intervals: list[list[int]], new_interval: list[int]) -> list[list[int]]:
+    """
+    >>> insert([[1, 3], [6, 9]], [2, 5])
+    [[1, 5], [6, 9]]
+    >>> insert([[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]], [4, 8])
+    [[1, 2], [3, 10], [12, 16]]
+    """
+    upd: list[list[int]] = []
+    ptr = 0
+    while ptr < len(intervals):
+        _, iend = intervals[ptr]
+        if new_interval[0] <= iend:
+            break
+        upd.append(intervals[ptr])
+        ptr += 1
+    if ptr < len(intervals):
+        istart, _ = intervals[ptr]
+        new_interval[0] = min(new_interval[0], istart)
+        while ptr < len(intervals):
+            istart, iend = intervals[ptr]
+            if new_interval[1] <= iend:
+                if istart <= new_interval[1]:
+                    new_interval[1] = iend
+                    ptr += 1
+                break
+            ptr += 1
+    upd.append(new_interval)
+    while ptr < len(intervals):
+        upd.append(intervals[ptr])
+        ptr += 1
+    return upd
+
+
+# https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+def lowest_common_ancestor(root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+    """
+    >>> lowest_common_ancestor(TreeNode.from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]), TreeNode(2), TreeNode(8)).val
+    6
+    >>> lowest_common_ancestor(TreeNode.from_list([6, 2, 8, 0, 4, 7, 9, None, None, 3, 5]), TreeNode(2), TreeNode(4)).val
+    2
+    """
+
+    def util(node: TreeNode | None) -> tuple[TreeNode | None, bool, bool]:
+        if node is None:
+            return (None, False, False)
+        lca, left_has_p, left_has_q = util(node.left)
+        if lca is not None:
+            return (lca, True, True)
+        lca, right_has_p, right_has_q = util(node.right)
+        if lca is not None:
+            return (lca, True, True)
+        has_p = node.val == p.val or left_has_p or right_has_p
+        has_q = node.val == q.val or left_has_q or right_has_q
+        if has_p and has_q:
+            return (node, True, True)
+        else:
+            return (None, has_p, has_q)
+
+    lca, _, _ = util(root)
+    assert lca is not None
+    return lca
+
+
 # https://leetcode.com/problems/maximum-subarray/
 def max_subarray(nums: list[int]) -> int:
     """
