@@ -12,5 +12,6 @@ All the solutions are decorated with doctests.
 You can run them:
 
 ```bash
-python -m doctest -v dsa/grind75
+# week1
+python -m doctest -v dsa/grind75/week1.py
 ```

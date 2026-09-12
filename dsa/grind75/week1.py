@@ -1,6 +1,6 @@
 from collections import Counter, deque
 
-from datastructures import ListNode, TreeNode
+from dsa.datastructures import ListNode, TreeNode
 
 
 # https://leetcode.com/problems/insert-interval/
