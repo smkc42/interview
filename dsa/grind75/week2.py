@@ -1,7 +1,105 @@
-from collections import deque
+from collections import Counter, deque
 from collections.abc import Callable
 
 from dsa.datastructures import ListNode, TreeNode
+
+
+# https://leetcode.com/problems/binary-tree-level-order-traversal/
+def level_order(root: TreeNode | None) -> list[list[int]]:
+    """
+    >>> level_order([3, 9, 20, None, None, 15, 7])
+    [[3], [9, 20], [15, 7]]
+    >>> level_order([1])
+    [[1]]
+    >>> level_order([])
+    []
+    """
+    if root is None:
+        return []
+    res: list[list[int]] = []
+    q = deque([(root, 1)])
+    while len(q) > 0:
+        node, depth = q.popleft()
+        if len(res) < depth:
+            res.append([])
+        res[-1].append(node.val)
+        if node.left is not None:
+            q.append((node.left, depth + 1))
+        if node.right is not None:
+            q.append((node.right, depth + 1))
+    return res
+
+
+# https://leetcode.com/problems/3sum/
+def three_sum(nums: list[int]) -> list[list[int]]:
+    """
+    >>> three_sum([-1, 0, 1, 2, -1, -4])
+    [[-1, -1, 2], [-1, 0, 1]]
+    >>> three_sum([0, 1, 1])
+    []
+    >>> three_sum([0, 0, 0])
+    [[0, 0, 0]]
+    """
+    nums.sort()
+    res: list[list[int]] = []
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i - 1] == nums[i]:
+            continue
+        left, right, target = i + 1, len(nums) - 1, -nums[i]
+        while left < right:
+            sum = nums[left] + nums[right]
+            if sum < target:
+                left += 1
+            elif sum > target:
+                right -= 1
+            else:
+                res.append([nums[i], nums[left], nums[right]])
+                left += 1
+                while left < right and nums[left] == nums[left - 1]:
+                    left += 1
+                right -= 1
+                while left < right and nums[right] == nums[right + 1]:
+                    right -= 1
+    return res
+
+
+# https://leetcode.com/problems/longest-substring-without-repeating-characters/
+def length_of_longest_substring(s: str) -> int:
+    """
+    >>> length_of_longest_substring("abcabcbb")
+    3
+    >>> length_of_longest_substring("bbbbb")
+    1
+    >>> length_of_longest_substring("pwwkew")
+    3
+    """
+    indices: dict[str, int] = {}
+    start, end, longest = 0, 0, 0
+    while end < len(s):
+        if s[end] in indices and indices[s[end]] >= start:
+            start = indices[s[end]] + 1
+        longest = max(longest, end - start + 1)
+        indices[s[end]] = end
+        end += 1
+    return longest
+
+
+# https://leetcode.com/problems/ransom-note/
+def can_construct(ransom_note: str, magazine: str) -> bool:
+    """
+    >>> can_construct("a", "b")
+    False
+    >>> can_construct("aa", "ab")
+    False
+    >>> can_construct("aa", "aab")
+    True
+    """
+    mfreq = Counter(magazine)
+    rfreq = Counter(ransom_note)
+    for chr in rfreq:
+        if chr not in mfreq or mfreq[chr] < rfreq[chr]:
+            return False
+    return True
 
 
 # https://leetcode.com/problems/first-bad-version/
