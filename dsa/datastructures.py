@@ -81,3 +81,42 @@ class TreeNode:
         while len(ret) > 0 and ret[-1] is None:
             ret.pop()
         return ret
+
+
+class GraphNode:
+    def __init__(self, val: int = 0, neighbors: list[GraphNode] | None = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+    @classmethod
+    def from_list(cls, adj_list: list[list[int]]) -> GraphNode | None:
+        if len(adj_list) == 0:
+            return None
+        nodes: dict[int, GraphNode] = {}
+        for i, neighbors in enumerate(adj_list):
+            if i + 1 not in nodes:
+                nodes[i + 1] = GraphNode(i + 1)
+            for nbr in neighbors:
+                if nbr not in nodes:
+                    nodes[nbr] = GraphNode(nbr)
+                nodes[i + 1].neighbors.append(nodes[nbr])
+        return nodes[1]
+
+    @classmethod
+    def to_list(cls, node: GraphNode | None) -> list[list[int]]:
+        if node is None:
+            return []
+        adj: dict[int, list[int]] = {}
+        visited: set[int] = {node.val}
+        q = deque([node])
+        while len(q) > 0:
+            n = q.popleft()
+            adj[n.val] = [nbr.val for nbr in n.neighbors]
+            for nbr in n.neighbors:
+                if nbr.val not in visited:
+                    visited.add(nbr.val)
+                    q.append(nbr)
+        adj_list: list[list[int]] = []
+        for val in range(1, len(adj) + 1):
+            adj_list.append(adj[val])
+        return adj_list
