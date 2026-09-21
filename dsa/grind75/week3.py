@@ -1,8 +1,114 @@
 from __future__ import annotations
 
+from collections import Counter
 from collections.abc import Callable
 
 from dsa.datastructures import GraphNode
+
+
+# https://leetcode.com/problems/min-stack/
+class MinStack:
+    """
+    >>> ms = MinStack()
+    >>> ms.push(-2)
+    >>> ms.push(0)
+    >>> ms.push(-3)
+    >>> ms.min()
+    -3
+    >>> ms.pop()
+    >>> ms.top()
+    0
+    >>> ms.min()
+    -2
+    >>> ms = MinStack()
+    >>> ms.push(-2)
+    >>> ms.push(0)
+    >>> ms.push(-1)
+    >>> ms.min()
+    -2
+    >>> ms.top()
+    -1
+    >>> ms.pop()
+    >>> ms.min()
+    -2
+    """
+
+    def __init__(self):
+        self.stack: list[int] = []
+        self.mins: list[int] = []
+
+    def push(self, value: int) -> None:
+        self.stack.append(value)
+        if len(self.mins) == 0 or value < self.mins[-1]:
+            self.mins.append(value)
+        else:
+            self.mins.append(self.mins[-1])
+
+    def pop(self) -> None:
+        self.stack.pop()
+        self.mins.pop()
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def min(self) -> int:
+        return self.mins[-1]
+
+
+# https://leetcode.com/problems/longest-palindrome/
+def longest_palindrome(s: str) -> int:
+    """
+    >>> longest_palindrome("abccccdd")
+    7
+    >>> longest_palindrome("a")
+    1
+    """
+    counter = Counter(s)
+    mid = False
+    length = 0
+    for chr in counter:
+        cnt = counter[chr]
+        if cnt % 2 == 0:
+            length += cnt
+        else:
+            mid = True
+            length += cnt - 1
+    return length + 1 if mid else length
+
+
+# https://leetcode.com/problems/climbing-stairs/
+def climb_stairs(n: int) -> int:
+    """
+    >>> climb_stairs(2)
+    2
+    >>> climb_stairs(3)
+    3
+    """
+    if n <= 2:
+        return n
+    prev2, prev1 = 1, 2
+    for x in range(3, n + 1):
+        cur = prev1 + prev2
+        prev2, prev1 = prev1, cur
+    return prev1
+
+
+# https://leetcode.com/problems/product-of-array-except-self/
+def product_except_self(nums: list[int]) -> list[int]:
+    """
+    >>> product_except_self([1, 2, 3, 4])
+    [24, 12, 8, 6]
+    >>> product_except_self([-1, 1, 0, -3, 3])
+    [0, 0, 9, 0, 0]
+    """
+    prefix = [1]
+    for i in range(1, len(nums)):
+        prefix.append(prefix[-1] * nums[i - 1])
+    suffix = [1]
+    for i in range(len(nums) - 2, -1, -1):
+        suffix.append(suffix[-1] * nums[i + 1])
+    suffix.reverse()
+    return [p * s for p, s in zip(prefix, suffix)]
 
 
 # https://leetcode.com/problems/coin-change/
