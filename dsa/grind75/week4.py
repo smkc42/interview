@@ -3,6 +3,69 @@ from collections import deque
 from dsa.datastructures import ListNode, TreeNode
 
 
+# https://leetcode.com/problems/search-in-rotated-sorted-array/
+def search(nums: list[int], target: int) -> int:
+    """
+    >>> search([4, 5, 6, 7, 0, 1, 2], 0)
+    4
+    >>> search([4, 5, 6, 7, 0, 1, 2], 3)
+    -1
+    >>> search([1], 0)
+    -1
+    """
+    left, right, boundary = 0, len(nums) - 1, -1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] <= nums[-1]:
+            boundary = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+    assert boundary != -1
+    left, right = (boundary, len(nums) - 1) if target <= nums[-1] else (0, boundary - 1)
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+
+# https://leetcode.com/problems/rotting-oranges/
+def oranges_rotting(grid: list[list[int]]) -> int:
+    """
+    >>> oranges_rotting([[2, 1, 1], [1, 1, 0], [0, 1, 1]])
+    4
+    >>> oranges_rotting([[2, 1, 1], [0, 1, 1], [1, 0, 1]])
+    -1
+    >>> oranges_rotting([[0, 2]])
+    0
+    """
+    rows, cols = len(grid), len(grid[0])
+    q: deque[tuple[int, int, int]] = deque()
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                q.append((r, c, 0))
+    mins = 0
+    while len(q) > 0:
+        r, c, m = q.popleft()
+        mins = max(mins, m)
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                grid[nr][nc] = 2
+                q.append((nr, nc, m + 1))
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 1:
+                return -1
+    return mins
+
+
 # https://leetcode.com/problems/number-of-islands/
 def num_islands(grid: list[list[str]]) -> int:
     """
