@@ -1,7 +1,76 @@
 import heapq
 from collections import Counter, defaultdict, deque
 
-from dsa.datastructures import TreeNode
+from dsa.datastructures import ListNode, TreeNode
+
+
+# https://leetcode.com/problems/middle-of-the-linked-list/
+def middle_node(head: ListNode | None) -> ListNode | None:
+    """
+    >>> ListNode.to_list(middle_node(ListNode.from_list([1, 2, 3, 4, 5])))
+    [3, 4, 5]
+    >>> ListNode.to_list(middle_node(ListNode.from_list([1, 2, 3, 4, 5, 6])))
+    [4, 5, 6]
+    """
+    slow = fast = head
+    while slow is not None and fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+    return slow
+
+
+# https://leetcode.com/problems/diameter-of-binary-tree/
+def diameter_of_binary_tree(root: TreeNode | None) -> int:
+    """
+    >>> diameter_of_binary_tree(TreeNode.from_list([1, 2, 3, 4, 5]))
+    3
+    >>> diameter_of_binary_tree(TreeNode.from_list([1, 2]))
+    1
+    """
+    nodes_on_diameter = 0
+
+    def util(node: TreeNode | None) -> int:
+        nonlocal nodes_on_diameter
+        if node is None:
+            return 0
+        left = util(node.left)
+        right = util(node.right)
+        nodes_on_diameter = max(nodes_on_diameter, left + right + 1)
+        return max(left, right) + 1
+
+    util(root)
+    return nodes_on_diameter - 1 if nodes_on_diameter != 0 else 0
+
+
+# https://leetcode.com/problems/add-binary/
+def add_binary(a: str, b: str) -> str:
+    """
+    >>> add_binary("11", "1")
+    '100'
+    >>> add_binary("1010", "1011")
+    '10101'
+    """
+    sum = carry = 0
+    i = 1
+    res: list[str] = []
+    while i <= len(a) and i <= len(b):
+        sum = int(a[-i]) + int(b[-i]) + carry
+        res.append(str(sum % 2))
+        carry = sum // 2
+        i += 1
+    while i <= len(a):
+        sum = int(a[-i]) + carry
+        res.append(str(sum % 2))
+        carry = sum // 2
+        i += 1
+    while i <= len(b):
+        sum = int(b[-i]) + carry
+        res.append(str(sum % 2))
+        carry = sum // 2
+        i += 1
+    if carry != 0:
+        res.append(str(carry))
+    return "".join(reversed(res))
 
 
 # https://leetcode.com/problems/majority-element/
